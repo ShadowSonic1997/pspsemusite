@@ -73,6 +73,12 @@ export function registerObjectStorageRoutes(app: Express): void {
   app.get("/objects/:objectPath(*)", async (req, res) => {
     try {
       const objectFile = await objectStorageService.getObjectEntityFile(req.path);
+      
+      // Add COOP and COEP headers for SharedArrayBuffer support (required by PSP emulator)
+      // Even for static assets served through this route
+      res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+      res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+      
       await objectStorageService.downloadObject(objectFile, res);
     } catch (error) {
       console.error("Error serving object:", error);
