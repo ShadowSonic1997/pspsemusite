@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Loader2, Gamepad } from "lucide-react";
+import { Plus, Loader2, Gamepad, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { api } from "@shared/routes";
+import { ObjectUploader } from "./ObjectUploader";
+import { useUpload } from "@/hooks/use-upload";
 
 export function AddGameModal() {
   const [open, setOpen] = useState(false);
@@ -19,6 +21,7 @@ export function AddGameModal() {
   });
   const { mutate, isPending } = useCreateGame();
   const { toast } = useToast();
+  const { getUploadParameters } = useUpload();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,15 +87,40 @@ export function AddGameModal() {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="url" className="text-muted-foreground uppercase text-xs tracking-wider">ROM URL (.iso, .cso, .zip)</Label>
-            <Input
-              id="url"
-              value={formData.url}
-              onChange={(e) => setFormData(prev => ({ ...prev, url: e.target.value }))}
-              placeholder="https://example.com/roms/game.iso"
-              className="bg-background/50 border-white/10 focus:border-primary/50 focus:ring-primary/20 font-mono text-sm"
-              required
-            />
+            <Label htmlFor="url" className="text-muted-foreground uppercase text-xs tracking-wider">ROM URL OR UPLOAD</Label>
+            <div className="flex gap-2">
+              <Input
+                id="url"
+                value={formData.url}
+                onChange={(e) => setFormData(prev => ({ ...prev, url: e.target.value }))}
+                placeholder="https://... or upload a file"
+                className="bg-background/50 border-white/10 focus:border-primary/50 focus:ring-primary/20 font-mono text-sm"
+                required
+              />
+              <ObjectUploader
+                onGetUploadParameters={getUploadParameters}
+                onComplete={(result) => {
+                  if (result.successful && result.successful.length > 0) {
+                    const file = result.successful[0];
+                    const objectPath = file.meta.objectPath as string;
+                    if (objectPath) {
+                      setFormData(prev => ({ 
+                        ...prev, 
+                        url: objectPath,
+                        title: prev.title || file.name.split('.')[0].replace(/[-_]/g, ' ') 
+                      }));
+                      toast({
+                        title: "Upload Successful",
+                        description: "ROM file uploaded and ready.",
+                      });
+                    }
+                  }
+                }}
+                buttonClassName="px-3"
+              >
+                <Upload className="w-4 h-4" />
+              </ObjectUploader>
+            </div>
           </div>
 
           <div className="space-y-2">

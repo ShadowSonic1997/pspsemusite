@@ -3,6 +3,7 @@ import type { Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
+import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
 
 async function seedDatabase() {
   const existingGames = await storage.getGames();
@@ -29,6 +30,9 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Register object storage routes
+  registerObjectStorageRoutes(app);
+
   // Seed the database on startup
   await seedDatabase();
 
