@@ -27,8 +27,16 @@ export function GamePlayer({ gameUrl }: GamePlayerProps) {
     window.EJS_player = '#game';
     window.EJS_core = 'psp';
     window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-    window.EJS_gameUrl = gameUrl;
+    
+    // Ensure gameUrl is absolute for EmulatorJS if it's a relative path
+    const absoluteGameUrl = gameUrl.startsWith('/') 
+      ? window.location.origin + gameUrl 
+      : gameUrl;
+    
+    window.EJS_gameUrl = absoluteGameUrl;
     window.EJS_threads = true; // Critical for PSP
+
+    console.log("Initializing EmulatorJS with URL:", absoluteGameUrl);
 
     // Create script
     const script = document.createElement('script');

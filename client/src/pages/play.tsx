@@ -6,6 +6,7 @@ import { Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
+import { DebugConsole } from "@/components/debug-console";
 
 export default function Play() {
   const [, params] = useRoute("/play/:id");
@@ -105,6 +106,7 @@ export default function Play() {
           </div>
         </motion.div>
       </main>
+      <DebugConsole />
     </div>
   );
 }
