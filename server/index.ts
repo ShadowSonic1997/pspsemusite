@@ -41,6 +41,9 @@ app.use((req, res, next) => {
   // Add COOP and COEP headers for SharedArrayBuffer support (required by PSP emulator)
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
   res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   const originalResJson = res.json;
   res.json = function (bodyJson, ...args) {
