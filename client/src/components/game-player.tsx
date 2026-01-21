@@ -35,7 +35,9 @@ export function GamePlayer({ gameUrl }: GamePlayerProps) {
     window.EJS_paths = {
       'ppsspp-thread-wasm.js': window.location.origin + '/emulatorjs/data/ppsspp-thread-wasm.js',
       'ppsspp-thread-wasm.wasm': window.location.origin + '/emulatorjs/data/ppsspp-thread-wasm.wasm',
-      'ppsspp-thread-wasm.data': window.location.origin + '/emulatorjs/data/ppsspp-thread-wasm.data'
+      'ppsspp-thread-wasm.data': window.location.origin + '/emulatorjs/data/ppsspp-thread-wasm.data',
+      'emulator.min.css': window.location.origin + '/emulatorjs/data/emulator.min.css',
+      'emulator.css': window.location.origin + '/emulatorjs/data/emulator.css'
     };
     
     // Ensure gameUrl is absolute for EmulatorJS if it's a relative path
