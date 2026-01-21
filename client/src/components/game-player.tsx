@@ -13,6 +13,7 @@ declare global {
     EJS_gameUrl: string;
     EJS_threads: boolean;
     EJS_emulator: any;
+    EJS_paths: Record<string, string>;
   }
 }
 
@@ -26,7 +27,16 @@ export function GamePlayer({ gameUrl }: GamePlayerProps) {
     // Set configuration
     window.EJS_player = '#game';
     window.EJS_core = 'psp';
-    window.EJS_pathtodata = '/emulatorjs/data/';
+    window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+    
+    // Explicitly override only the core files to load from our local server
+    // while keeping the rest of the assets loading from the CDN.
+    // This bypasses network blocks on the heavy WASM core.
+    window.EJS_paths = {
+      'ppsspp-thread-wasm.js': window.location.origin + '/emulatorjs/data/ppsspp-thread-wasm.js',
+      'ppsspp-thread-wasm.wasm': window.location.origin + '/emulatorjs/data/ppsspp-thread-wasm.wasm',
+      'ppsspp-thread-wasm.data': window.location.origin + '/emulatorjs/data/ppsspp-thread-wasm.data'
+    };
     
     // Ensure gameUrl is absolute for EmulatorJS if it's a relative path
     const absoluteGameUrl = gameUrl.startsWith('/') 
@@ -40,7 +50,7 @@ export function GamePlayer({ gameUrl }: GamePlayerProps) {
 
     // Create script
     const script = document.createElement('script');
-    script.src = '/emulatorjs/data/loader.js';
+    script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
     script.async = true;
 
     // Append script
