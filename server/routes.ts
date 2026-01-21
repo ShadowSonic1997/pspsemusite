@@ -1,5 +1,6 @@
-import type { Express } from "express";
+import express, { type Express } from "express";
 import type { Server } from "http";
+import path from "path";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
@@ -32,6 +33,9 @@ export async function registerRoutes(
 ): Promise<Server> {
   // Register object storage routes
   registerObjectStorageRoutes(app);
+
+  // Serve emulator data locally
+  app.use('/emulatorjs', express.static(path.join(process.cwd(), 'public/emulatorjs')));
 
   // Seed the database on startup
   await seedDatabase();

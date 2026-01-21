@@ -26,7 +26,7 @@ export function GamePlayer({ gameUrl }: GamePlayerProps) {
     // Set configuration
     window.EJS_player = '#game';
     window.EJS_core = 'psp';
-    window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+    window.EJS_pathtodata = window.location.origin + '/emulatorjs/data/';
     
     // Ensure gameUrl is absolute for EmulatorJS if it's a relative path
     const absoluteGameUrl = gameUrl.startsWith('/') 
@@ -40,7 +40,7 @@ export function GamePlayer({ gameUrl }: GamePlayerProps) {
 
     // Create script
     const script = document.createElement('script');
-    script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+    script.src = window.location.origin + '/emulatorjs/data/loader.js';
     script.async = true;
 
     // Append script
