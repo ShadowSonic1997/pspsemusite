@@ -53,8 +53,17 @@ export function GamePlayer({ gameUrl }: GamePlayerProps) {
     // Debugging network requests
     const originalFetch = window.fetch;
     window.fetch = function(...args) {
-      console.log("Emulator Fetch Request:", args[0]);
-      return originalFetch.apply(this, args);
+      const url = args[0] instanceof Request ? args[0].url : String(args[0]);
+      console.log("Emulator Fetch Request:", url);
+      
+      // If the emulator is trying to fetch a blob URL that is failing, 
+      // it might be because of COEP/COOP headers or internal state.
+      // We can't easily intercept the blob creation itself without more invasive hooks,
+      // but we can log if it fails.
+      return originalFetch.apply(this, args).catch(err => {
+        console.error("Fetch failed for URL:", url, err);
+        throw err;
+      });
     };
 
     // Create script
