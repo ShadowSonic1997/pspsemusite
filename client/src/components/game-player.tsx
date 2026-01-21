@@ -33,11 +33,11 @@ export function GamePlayer({ gameUrl }: GamePlayerProps) {
     // while keeping the rest of the assets loading from the CDN.
     // This bypasses network blocks on the heavy WASM core.
     window.EJS_paths = {
-      'ppsspp-thread-wasm.js': window.location.origin + '/emulatorjs/data/ppsspp-thread-wasm.js',
-      'ppsspp-thread-wasm.wasm': window.location.origin + '/emulatorjs/data/ppsspp-thread-wasm.wasm',
-      'ppsspp-thread-wasm.data': window.location.origin + '/emulatorjs/data/ppsspp-thread-wasm.data',
-      'emulator.min.css': window.location.origin + '/emulatorjs/data/emulator.min.css',
-      'emulator.css': window.location.origin + '/emulatorjs/data/emulator.css'
+      'ppsspp-thread-wasm.js': '/emulatorjs/data/ppsspp-thread-wasm.js',
+      'ppsspp-thread-wasm.wasm': '/emulatorjs/data/ppsspp-thread-wasm.wasm',
+      'ppsspp-thread-wasm.data': '/emulatorjs/data/ppsspp-thread-wasm.data',
+      'emulator.min.css': '/emulatorjs/data/emulator.min.css',
+      'emulator.css': '/emulatorjs/data/emulator.css'
     };
     
     // Ensure gameUrl is absolute for EmulatorJS if it's a relative path
