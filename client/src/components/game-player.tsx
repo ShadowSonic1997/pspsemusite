@@ -49,6 +49,13 @@ export function GamePlayer({ gameUrl }: GamePlayerProps) {
     window.EJS_threads = true; // Critical for PSP
 
     console.log("Initializing EmulatorJS with URL:", absoluteGameUrl);
+    
+    // Debugging network requests
+    const originalFetch = window.fetch;
+    window.fetch = function(...args) {
+      console.log("Emulator Fetch Request:", args[0]);
+      return originalFetch.apply(this, args);
+    };
 
     // Create script
     const script = document.createElement('script');
