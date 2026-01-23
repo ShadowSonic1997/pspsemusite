@@ -34,22 +34,6 @@ export async function registerRoutes(
   // Register object storage routes
   registerObjectStorageRoutes(app);
 
-  // Serve emulator data locally
-  app.use('/emulatorjs', express.static(path.join(process.cwd(), 'public/emulatorjs')));
-
-  // Proxy route for core files to ensure correct headers
-  app.get('/api/proxy-core/:filename', (req, res) => {
-    const filename = req.params.filename;
-    const filePath = path.join(process.cwd(), 'public/emulatorjs/data', filename);
-    
-    res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
-    res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
-    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    
-    res.sendFile(filePath);
-  });
-
   // Seed the database on startup
   await seedDatabase();
 

@@ -13,8 +13,6 @@ declare global {
     EJS_gameUrl: string;
     EJS_threads: boolean;
     EJS_emulator: any;
-    EJS_paths: Record<string, string>;
-    EJS_forceBlob: boolean;
   }
 }
 
@@ -30,15 +28,6 @@ export function GamePlayer({ gameUrl }: GamePlayerProps) {
     window.EJS_core = 'psp';
     window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
     
-    // Use the proxy route for core files to handle headers correctly
-    window.EJS_paths = {
-      'ppsspp-thread-wasm.js': '/api/proxy-core/ppsspp-thread-wasm.js',
-      'ppsspp-thread-wasm.wasm': '/api/proxy-core/ppsspp-thread-wasm.wasm',
-      'ppsspp-thread-wasm.data': '/api/proxy-core/ppsspp-thread-wasm.data',
-      'emulator.min.css': '/api/proxy-core/emulator.min.css',
-      'emulator.css': '/api/proxy-core/emulator.css'
-    };
-    
     // Ensure gameUrl is absolute for EmulatorJS if it's a relative path
     const absoluteGameUrl = gameUrl.startsWith('/') 
       ? window.location.origin + gameUrl 
@@ -46,10 +35,20 @@ export function GamePlayer({ gameUrl }: GamePlayerProps) {
     
     window.EJS_gameUrl = absoluteGameUrl;
     window.EJS_threads = true; // Critical for PSP
-    window.EJS_forceBlob = false; // Prevent forcing blob URLs if they fail
 
     console.log("Initializing EmulatorJS with URL:", absoluteGameUrl);
     
+    // Debugging network requests
+    const originalFetch = window.fetch;
+    window.fetch = function(...args) {
+      const url = args[0] instanceof Request ? args[0].url : String(args[0]);
+      console.log("Emulator Fetch Request:", url);
+      return originalFetch.apply(this, args).catch(err => {
+        console.error("Fetch failed for URL:", url, err);
+        throw err;
+      });
+    };
+
     // Create script
     const script = document.createElement('script');
     script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
