@@ -14,6 +14,7 @@ declare global {
     EJS_threads: boolean;
     EJS_emulator: any;
     EJS_paths: Record<string, string>;
+    EJS_forceBlob: boolean;
   }
 }
 
@@ -29,15 +30,13 @@ export function GamePlayer({ gameUrl }: GamePlayerProps) {
     window.EJS_core = 'psp';
     window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
     
-    // Explicitly override only the core files to load from our local server
-    // while keeping the rest of the assets loading from the CDN.
-    // This bypasses network blocks on the heavy WASM core.
+    // Use the proxy route for core files to handle headers correctly
     window.EJS_paths = {
-      'ppsspp-thread-wasm.js': '/emulatorjs/data/ppsspp-thread-wasm.js',
-      'ppsspp-thread-wasm.wasm': '/emulatorjs/data/ppsspp-thread-wasm.wasm',
-      'ppsspp-thread-wasm.data': '/emulatorjs/data/ppsspp-thread-wasm.data',
-      'emulator.min.css': '/emulatorjs/data/emulator.min.css',
-      'emulator.css': '/emulatorjs/data/emulator.css'
+      'ppsspp-thread-wasm.js': '/api/proxy-core/ppsspp-thread-wasm.js',
+      'ppsspp-thread-wasm.wasm': '/api/proxy-core/ppsspp-thread-wasm.wasm',
+      'ppsspp-thread-wasm.data': '/api/proxy-core/ppsspp-thread-wasm.data',
+      'emulator.min.css': '/api/proxy-core/emulator.min.css',
+      'emulator.css': '/api/proxy-core/emulator.css'
     };
     
     // Ensure gameUrl is absolute for EmulatorJS if it's a relative path
@@ -47,6 +46,7 @@ export function GamePlayer({ gameUrl }: GamePlayerProps) {
     
     window.EJS_gameUrl = absoluteGameUrl;
     window.EJS_threads = true; // Critical for PSP
+    window.EJS_forceBlob = false; // Prevent forcing blob URLs if they fail
 
     console.log("Initializing EmulatorJS with URL:", absoluteGameUrl);
     
